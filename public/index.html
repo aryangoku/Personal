@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aru</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="lockScreen" class="lock-screen">
+      <div class="lock-love-particles" aria-hidden="true">
+        <span>❤</span>
+        <span>❤</span>
+        <span>❤</span>
+        <span>❤</span>
+        <span>❤</span>
+      </div>
+      <div class="lock-card">
+        <p class="eyebrow">Private Love Space</p>
+        <h2>Enter Password</h2>
+        <p class="subtle">
+          Hint: something only we know, but it does not exist.
+        </p>
+        <p id="lockQuote" class="lock-quote"></p>
+        <div id="fingerprintPulse" class="fingerprint-pulse" aria-hidden="true">
+          <span>◎</span>
+        </div>
+        <form id="unlockForm" class="unlock-form">
+          <input
+            id="passwordInput"
+            type="password"
+            placeholder="Enter password"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">Unlock</button>
+        </form>
+        <p id="unlockError" class="unlock-error hidden">Wrong password, try again.</p>
+      </div>
+    </div>
+
+    <div class="aurora aurora-one"></div>
+    <div class="aurora aurora-two"></div>
+    <div class="hearts" aria-hidden="true">
+      <span class="heart h1">❤</span>
+      <span class="heart h2">❤</span>
+      <span class="heart h3">❤</span>
+      <span class="heart h4">❤</span>
+      <span class="heart h5">❤</span>
+      <span class="heart h6">❤</span>
+    </div>
+    <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
+    <main id="appRoot" class="app app-locked">
+      <section class="hero">
+        <div class="photo photo-left">
+          <img src="./images/memory-1.jpg" alt="Our memory 1" />
+        </div>
+        <div class="center-title">
+          <p class="eyebrow">Made with love</p>
+          <h1>For My Shona</h1>
+          <p>Your personal AI in my voice, always yours.</p>
+        </div>
+        <div class="photo photo-right">
+          <img src="./images/memory-2.jpg" alt="Our memory 2" />
+        </div>
+      </section>
+
+      <section class="love-dashboard">
+        <article class="love-widget">
+          <h3>Time Since We Started Dating</h3>
+          <p id="loveDuration" class="big-value">Loading...</p>
+          <p class="subtle">Every second with you is my favorite story.</p>
+        </article>
+        <article class="love-widget">
+          <h3>Countdown to Your Birthday</h3>
+          <p id="birthdayCountdown" class="big-value">Loading...</p>
+          <p class="subtle">22nd May - your special day, Shona.</p>
+        </article>
+        <article class="love-widget">
+          <h3>Countdown to Anniversary</h3>
+          <p id="anniversaryCountdown" class="big-value">Loading...</p>
+          <p class="subtle">26th Aug - our forever day.</p>
+        </article>
+        <article class="love-widget">
+          <h3>Our Love Streak</h3>
+          <p id="loveStreak" class="big-value">Loading...</p>
+          <p class="subtle">Days you opened this special app.</p>
+        </article>
+      </section>
+
+      <section class="chat-card">
+        <div class="card-top">
+          <h2>Aru</h2>
+          <span class="status-dot"></span>
+        </div>
+        <div id="chatWindow" class="chat-window">
+          <div class="msg bot">
+            Hi Shona! I am here for you always. Ask me anything.
+          </div>
+        </div>
+        <form id="chatForm" class="chat-form">
+          <input
+            id="messageInput"
+            type="text"
+            placeholder="Ask me anything, Shona..."
+            autocomplete="off"
+            required
+          />
+          <button type="submit" id="sendBtn">Send</button>
+        </form>
+      </section>
+
+      <section class="distance-card">
+        <div class="card-top">
+          <h2>Distance Meter</h2>
+        </div>
+        <div class="distance-grid">
+          <article class="distance-pill">
+            <h3>Miles Between Us</h3>
+            <p id="distanceMiles" class="big-value">Loading...</p>
+            <p class="subtle">Syracuse, NY, US -> Navi Mumbai, India</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="heart-jar-card">
+        <div class="card-top">
+          <h2>Heart Jar</h2>
+        </div>
+        <p class="subtle">Tap a heart whenever you miss me, Shona.</p>
+        <div id="heartJarGrid" class="heart-jar-grid"></div>
+        <p id="heartJarMessage" class="lab-main">Pick a heart and open your message.</p>
+      </section>
+
+      <section class="open-when-card">
+        <div class="card-top">
+          <h2>Open When...</h2>
+        </div>
+        <div class="open-grid">
+          <button class="open-when-btn" data-open-when="miss">Open when you miss me</button>
+          <button class="open-when-btn" data-open-when="sad">Open when you are sad</button>
+          <button class="open-when-btn" data-open-when="motivation">Open when you need motivation</button>
+          <button class="open-when-btn" data-open-when="alone">Open when you feel alone</button>
+          <button class="open-when-btn" data-open-when="smile">Open when you want to smile</button>
+        </div>
+        <p id="openWhenMessage" class="lab-main">
+          Tap any card and Aru will open a message for Shona.
+        </p>
+      </section>
+
+      <section class="daily-note-card">
+        <div class="card-top">
+          <h2>Daily Love Note</h2>
+        </div>
+        <p id="dailyLoveNoteText" class="daily-note-text">Loading today's note...</p>
+        <button id="nextLoveNoteBtn" class="birthday-btn" type="button">Another Note</button>
+      </section>
+
+      <section class="hug-card">
+        <div class="card-top">
+          <h2>Pick a Hug</h2>
+        </div>
+        <div class="open-grid">
+          <button class="hug-btn" data-hug="tight">Tight hug</button>
+          <button class="hug-btn" data-hug="forehead">Forehead kiss</button>
+          <button class="hug-btn" data-hug="longdistance">Long-distance hug</button>
+          <button class="hug-btn" data-hug="comfort">Comfort hug</button>
+          <button class="hug-btn" data-hug="proud">Proud-of-you hug</button>
+        </div>
+        <div id="hugAnimation" class="hug-animation">❤</div>
+        <p id="hugMessage" class="lab-main">Choose a hug and I will send it to you, Shona.</p>
+      </section>
+
+      <section class="memory-map-card">
+        <div class="card-top">
+          <h2>Memory Map</h2>
+        </div>
+        <div id="memoryMapList" class="memory-map-list"></div>
+      </section>
+
+      <section class="moments-card">
+        <div class="card-top">
+          <h2>Our Special Moments</h2>
+        </div>
+        <p class="subtle">Tap a moment to open its photo/video memory.</p>
+        <div id="momentsGrid" class="moments-grid"></div>
+      </section>
+
+    </main>
+
+    <div id="momentViewer" class="moment-viewer hidden">
+      <div class="moment-viewer-card">
+        <button id="closeMomentViewer" class="viewer-close-btn" type="button">
+          Close
+        </button>
+        <h3 id="viewerTitle"></h3>
+        <div id="viewerMediaWrap"></div>
+        <p id="viewerCaption" class="subtle"></p>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
