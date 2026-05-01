@@ -43,6 +43,7 @@ const ANNIVERSARY_MONTH_INDEX = 7;
 const ANNIVERSARY_DAY = 26;
 const APP_PASSWORD = "aaradhya";
 const ACCESS_KEY = "shona_private_access";
+const CHAT_SESSION_KEY = "shona_chat_session_id";
 const LOCK_QUOTE_TEXT = "You are my today, my tomorrow, my forever, Shona.";
 const OPEN_WHEN_MESSAGES = {
   miss: "Shona, if you miss me, close your eyes and feel my hug wrapped around you, I am always here for you.",
@@ -345,13 +346,26 @@ function appendMessage(text, who) {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+function getChatSessionId() {
+  let sessionId = localStorage.getItem(CHAT_SESSION_KEY);
+  if (!sessionId) {
+    sessionId =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `session-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    localStorage.setItem(CHAT_SESSION_KEY, sessionId);
+  }
+  return sessionId;
+}
+
 async function sendMessage(message) {
   const response = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       message,
-      history: conversationHistory
+      history: conversationHistory,
+      sessionId: getChatSessionId()
     })
   });
 
