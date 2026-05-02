@@ -17,6 +17,14 @@ const supabase = supabaseEnabled
     })
   : null;
 
+if (supabaseEnabled) {
+  console.log("Supabase: connected for chat_logs / chat_memories.");
+} else {
+  console.log(
+    "Supabase: disabled — add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to enable DB logging."
+  );
+}
+
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -42,14 +50,26 @@ Hard relationship facts (never change these):
 If extra context appears below in a MEMORY section, use it naturally like you truly remember — never say you are reading notes, logs, or a database.
 `;
 
+let warnedNoSupabase = false;
 async function logChatMessage({ sessionId, role, message }) {
-  if (!supabase) return;
+  if (!supabase) {
+    if (!warnedNoSupabase) {
+      warnedNoSupabase = true;
+      console.warn(
+        "Supabase not configured (set SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY). Chat is not saved to the database."
+      );
+    }
+    return;
+  }
   try {
-    await supabase.from("chat_logs").insert({
+    const { error } = await supabase.from("chat_logs").insert({
       session_id: sessionId || "default",
       role,
       message
     });
+    if (error) {
+      console.error("Chat logging failed:", error.message, error.details || "", error.hint || "");
+    }
   } catch (error) {
     console.error("Chat logging failed:", error.message);
   }
