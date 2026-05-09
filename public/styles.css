@@ -508,7 +508,8 @@ body {
 .daily-note-card,
 .hug-card,
 .memory-map-card,
-.moments-card {
+.moments-card,
+.period-card {
   background:
     radial-gradient(circle at top right, rgba(255, 165, 225, 0.2), transparent 46%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
@@ -675,6 +676,73 @@ body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.7rem;
+}
+
+.period-form {
+  margin-top: 0.7rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+  align-items: end;
+}
+
+.period-form label {
+  display: grid;
+  gap: 0.28rem;
+  font-size: 0.8rem;
+  color: #ffd9ef;
+}
+
+.period-form input {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border-radius: 12px;
+  padding: 0.66rem 0.7rem;
+  outline: none;
+}
+
+.period-grid {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.period-pill {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  padding: 0.72rem;
+}
+
+.period-pill h3 {
+  margin: 0;
+  color: #ffd7ef;
+  font-size: 0.92rem;
+}
+
+.period-checklist {
+  margin-top: 0.65rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  padding: 0.65rem 0.8rem;
+}
+
+.period-checklist h3 {
+  margin: 0 0 0.45rem;
+  color: #ffd7ef;
+  font-size: 0.94rem;
+}
+
+.period-checklist ol {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.28rem;
+  color: rgba(255, 240, 249, 0.95);
+  font-size: 0.88rem;
 }
 
 .distance-pill {
@@ -1021,6 +1089,14 @@ body {
   }
 
   .distance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .period-form {
+    grid-template-columns: 1fr;
+  }
+
+  .period-grid {
     grid-template-columns: 1fr;
   }
 

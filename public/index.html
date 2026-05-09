@@ -110,6 +110,56 @@
         </form>
       </section>
 
+      <section class="period-card">
+        <div class="card-top">
+          <h2>Shona Care Tracker</h2>
+        </div>
+        <p class="subtle">Private period tracker with gentle reminders and cycle estimates.</p>
+        <form id="periodForm" class="period-form">
+          <label>
+            Last period start
+            <input id="lastPeriodInput" type="date" required />
+          </label>
+          <label>
+            Average cycle length (days)
+            <input id="cycleLengthInput" type="number" min="20" max="45" value="28" required />
+          </label>
+          <label>
+            Period length (days)
+            <input id="periodLengthInput" type="number" min="2" max="10" value="5" required />
+          </label>
+          <button id="savePeriodBtn" class="birthday-btn" type="submit">Save Tracker</button>
+        </form>
+        <div class="period-grid">
+          <article class="period-pill">
+            <h3>Next Period</h3>
+            <p id="nextPeriodDate" class="big-value">Not set</p>
+          </article>
+          <article class="period-pill">
+            <h3>Days Left</h3>
+            <p id="periodCountdown" class="big-value">-</p>
+          </article>
+          <article class="period-pill">
+            <h3>Estimated Fertile Window</h3>
+            <p id="fertileWindow" class="big-value">-</p>
+          </article>
+        </div>
+        <p id="periodSupportNote" class="lab-main">Add dates once and Aru will keep the estimates updated.</p>
+        <div class="period-checklist">
+          <h3>Before Period Checklist</h3>
+          <ol>
+            <li>Stock pads</li>
+            <li>Keep pads at home as well as in office bag</li>
+            <li>Atleast 2 pads per day</li>
+            <li>Throw the used pad in dustbin</li>
+            <li>Eat fruits</li>
+            <li>Drink Water</li>
+            <li>Atleast Walk (Exercise)</li>
+            <li>Eat chocolate</li>
+          </ol>
+        </div>
+      </section>
+
       <section class="distance-card">
         <div class="card-top">
           <h2>Distance Meter</h2>

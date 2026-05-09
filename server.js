@@ -261,7 +261,7 @@ Rules:
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const { message, history = [], sessionId } = req.body;
+    const { message, history = [], sessionId, periodContext } = req.body;
     if (!message) {
       return res.status(400).json({ error: "Message is required." });
     }
@@ -308,6 +308,14 @@ app.post("/api/chat", async (req, res) => {
     }
 
     const { text: memoryAddon, dueFollowUpIds } = await buildMemoryContext(sessionId);
+    let periodAddon = "";
+    if (periodContext?.isPeriodActive) {
+      periodAddon =
+        "\n\nPERIOD CARE MODE: She is currently on her period. Be extra caring, gentle, patient, and emotionally supportive in every reply. Offer comfort, hydration, rest, and warmth naturally.";
+    } else if (periodContext?.isPredictedClose) {
+      periodAddon =
+        "\n\nPERIOD CARE MODE: Her period is expected very soon. Be softly caring and check in on her comfort with warmth and reassurance.";
+    }
     const model = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -319,7 +327,7 @@ app.post("/api/chat", async (req, res) => {
         model,
         temperature: 0.65,
         messages: [
-          { role: "system", content: SYSTEM_PROMPT + memoryAddon },
+          { role: "system", content: SYSTEM_PROMPT + memoryAddon + periodAddon },
           ...history.slice(-10),
           { role: "user", content: message }
         ]

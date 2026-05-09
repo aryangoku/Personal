@@ -6,6 +6,14 @@ const loveDuration = document.getElementById("loveDuration");
 const birthdayCountdown = document.getElementById("birthdayCountdown");
 const anniversaryCountdown = document.getElementById("anniversaryCountdown");
 const loveStreak = document.getElementById("loveStreak");
+const periodForm = document.getElementById("periodForm");
+const lastPeriodInput = document.getElementById("lastPeriodInput");
+const cycleLengthInput = document.getElementById("cycleLengthInput");
+const periodLengthInput = document.getElementById("periodLengthInput");
+const nextPeriodDate = document.getElementById("nextPeriodDate");
+const periodCountdown = document.getElementById("periodCountdown");
+const fertileWindow = document.getElementById("fertileWindow");
+const periodSupportNote = document.getElementById("periodSupportNote");
 const distanceMiles = document.getElementById("distanceMiles");
 const heartJarGrid = document.getElementById("heartJarGrid");
 const heartJarMessage = document.getElementById("heartJarMessage");
@@ -44,6 +52,7 @@ const ANNIVERSARY_DAY = 26;
 const APP_PASSWORD = "aaradhya";
 const ACCESS_KEY = "shona_private_access";
 const CHAT_SESSION_KEY = "shona_chat_session_id";
+const PERIOD_TRACKER_KEY = "shona_period_tracker";
 const LOCK_QUOTE_TEXT = "You are my today, my tomorrow, my forever, Shona.";
 const OPEN_WHEN_MESSAGES = {
   miss: "Shona, if you miss me, close your eyes and feel my hug wrapped around you, I am always here for you.",
@@ -223,6 +232,107 @@ function updateDashboard() {
   );
 }
 
+function formatShortDate(dateObj) {
+  return dateObj.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
+function addDays(baseDate, days) {
+  const date = new Date(baseDate);
+  date.setDate(date.getDate() + days);
+  return date;
+}
+
+function loadPeriodTracker() {
+  const saved = localStorage.getItem(PERIOD_TRACKER_KEY);
+  if (!saved) return null;
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return null;
+  }
+}
+
+function getPeriodInsights(data) {
+  if (!data?.lastPeriodStart) return null;
+  const lastStart = new Date(data.lastPeriodStart);
+  if (Number.isNaN(lastStart.getTime())) return null;
+
+  const cycleDays = Number(data.cycleLength) || 28;
+  const periodDays = Number(data.periodLength) || 5;
+  const now = new Date();
+
+  let nextStart = addDays(lastStart, cycleDays);
+  while (nextStart < now) {
+    nextStart = addDays(nextStart, cycleDays);
+  }
+
+  const daysLeft = Math.ceil((nextStart - now) / (1000 * 60 * 60 * 24));
+  const ovulationDay = addDays(nextStart, -14);
+  const fertileStart = addDays(ovulationDay, -5);
+  const fertileEnd = addDays(ovulationDay, 1);
+
+  const activeStart = data.activePeriodStart ? new Date(data.activePeriodStart) : null;
+  let isPeriodActive = false;
+  if (activeStart && !Number.isNaN(activeStart.getTime())) {
+    const activeEnd = addDays(activeStart, periodDays);
+    if (now >= activeStart && now < activeEnd) {
+      isPeriodActive = true;
+    }
+  }
+
+  return {
+    cycleDays,
+    periodDays,
+    nextStart,
+    daysLeft,
+    fertileStart,
+    fertileEnd,
+    isPeriodActive
+  };
+}
+
+function updatePeriodTrackerView(data) {
+  if (!data?.lastPeriodStart) {
+    nextPeriodDate.textContent = "Not set";
+    periodCountdown.textContent = "-";
+    fertileWindow.textContent = "-";
+    periodSupportNote.textContent = "Add dates once and Aru will keep the estimates updated.";
+    return;
+  }
+
+  const insights = getPeriodInsights(data);
+  if (!insights) return;
+
+  nextPeriodDate.textContent = formatShortDate(insights.nextStart);
+  periodCountdown.textContent = insights.daysLeft <= 0 ? "Today" : `${insights.daysLeft} days`;
+  fertileWindow.textContent = `${formatShortDate(insights.fertileStart)} - ${formatShortDate(insights.fertileEnd)}`;
+
+  if (insights.isPeriodActive) {
+    periodSupportNote.textContent =
+      "Periods are active. Be extra gentle, caring, and supportive today.";
+  } else if (insights.daysLeft <= 2) {
+    periodSupportNote.textContent =
+      "Gentle reminder: period may start soon. Extra care, warmth, and comfort will mean a lot.";
+  } else {
+    periodSupportNote.textContent = `Cycle saved: around ${insights.periodDays} day period every ${insights.cycleDays} days.`;
+  }
+}
+
+function initPeriodTracker() {
+  const saved = loadPeriodTracker();
+  if (saved) {
+    lastPeriodInput.value = saved.lastPeriodStart || "";
+    cycleLengthInput.value = saved.cycleLength || 28;
+    periodLengthInput.value = saved.periodLength || 5;
+  }
+  updatePeriodTrackerView(saved);
+}
+
+
 function milesBetweenPoints(lat1, lon1, lat2, lon2) {
   const toRad = (value) => (value * Math.PI) / 180;
   const earthRadiusKm = 6371;
@@ -359,13 +469,22 @@ function getChatSessionId() {
 }
 
 async function sendMessage(message) {
+  const tracker = loadPeriodTracker();
+  const insights = getPeriodInsights(tracker);
   const response = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       message,
       history: conversationHistory,
-      sessionId: getChatSessionId()
+      sessionId: getChatSessionId(),
+      periodContext: insights
+        ? {
+            isPeriodActive: insights.isPeriodActive,
+            isPredictedClose: insights.daysLeft <= 2 && insights.daysLeft >= 0,
+            daysLeft: insights.daysLeft
+          }
+        : null
     })
   });
 
@@ -522,6 +641,19 @@ lockScreen.addEventListener(
   { passive: true }
 );
 
+periodForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const payload = {
+    lastPeriodStart: lastPeriodInput.value,
+    cycleLength: Number(cycleLengthInput.value) || 28,
+    periodLength: Number(periodLengthInput.value) || 5,
+    activePeriodStart: null
+  };
+  if (!payload.lastPeriodStart) return;
+  localStorage.setItem(PERIOD_TRACKER_KEY, JSON.stringify(payload));
+  updatePeriodTrackerView(payload);
+});
+
 function bootstrapRomanticFeatures() {
   startTypewriterQuote();
   checkInitialAccess();
@@ -531,8 +663,10 @@ function bootstrapRomanticFeatures() {
   renderHeartJar();
   renderMemoryMap();
   renderSpecialMoments();
+  initPeriodTracker();
   setDailyLoveNote();
   setInterval(updateDashboard, 1000);
+  setInterval(() => updatePeriodTrackerView(loadPeriodTracker()), 60000);
 }
 
 bootstrapRomanticFeatures();
