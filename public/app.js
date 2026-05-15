@@ -25,6 +25,11 @@ const hugButtons = document.querySelectorAll(".hug-btn");
 const hugAnimation = document.getElementById("hugAnimation");
 const hugMessage = document.getElementById("hugMessage");
 const memoryMapList = document.getElementById("memoryMapList");
+const memoryNotesGrid = document.getElementById("memoryNotesGrid");
+const noteViewer = document.getElementById("noteViewer");
+const closeNoteViewer = document.getElementById("closeNoteViewer");
+const noteViewerTitle = document.getElementById("noteViewerTitle");
+const noteViewerBody = document.getElementById("noteViewerBody");
 const momentsGrid = document.getElementById("momentsGrid");
 const momentViewer = document.getElementById("momentViewer");
 const closeMomentViewer = document.getElementById("closeMomentViewer");
@@ -86,6 +91,19 @@ const MEMORY_MAP_ITEMS = [
   { place: "My Place Nightout + Daman Trip", note: "Care, closeness, and moments that felt like home with you." },
   { place: "Marine Drive + Malabar Hills + Mini Seashore", note: "First rose, first car date, and our best unofficial date." },
   { place: "Dream Destination", note: "Next stop: our forever travel story together." }
+];
+const MEMORY_NOTES = [
+  {
+    date: "30th March",
+    preview: "Life's all fucked up. Never thought I would get so attached to a girl...",
+    body: `Life's all fucked up. Never thought I would get so attached to a girl. Yesterday when she told me her decision I was devastated, I felt my whole world got destroyed. I didn't know what To do never felt this hurt in my life. I knew this day would come but I wasn't prepared honestly I didn't wanted all this to happen. She was really special to me I was happy whenever I was with her or whenever we use to talk. Never Cried in front of anyone but in front of her I felt safe to express my emotions. She was my comfort place. Maybe I didn't deserve her she deserves someone better than me And I think she found one. I'm really afraid , I don't know how to react what to do it's like my mind is stuck. Feeling anxious whole time. I really want to call her and talk to her for hours but I don't think it's right. I should be able to cope up with this situation by myself. Maybe in some universe we are together and whatever we dreamt could be true there. I really want to hug her so tightly and cry on her shoulder. I always like to pretend that I am emotionless man, but I am not I am the biggest emotionally weak person and there's only one who can handle me and it was her. I don't think I'll be able to love anyone after all this stuff. She raised the bar so high I don't think any girl can reach there. I never forced my feeling on her whatever I said or I felt for her was natural and that's the best thing. I know it will be hard to forget her and all this things but honestly I don't want to forget her. It will be difficult for me to move on from this but she's happy and that's all that matters. And no matter what happens I won't hate her or back bitch about her she helped me to become a better person. I changed myself for her I was never like this.I'll always love her❤️🥺Nothing Will Be Same After She Left🥺`
+  },
+  {
+    date: "27 April",
+    preview: "Our first proper hug. It was never planned...",
+    body: `Our first proper hug. It was never planned. The story begins at night where we talked till 6 and then she went on to sleep.  And then in the morning I got up at 12 it was because she called me. Then she told me she was coming to Dadar to deliver mangoes to her aunt. So we decided to meet. But I had a turf tournament from 4 to 7 so we decided that she'll leave by 1:30 and reach by 3 so we'll get half an hour to meet but then I realised the tournament was from 3 to 7 so there was no time to meet as she was also late to leave. So we were on call till I reach turf we thought we'll not meet today. But destiny had other plans. So my turf got over at 7 and I saw that I had some emergency messages from her so I called her and got to know it was by mistake so after that we were thinking of meeting again. But I was saying no as she might get late to reach home and her mom will scold but she got angry on me as she thought I don't want to meet her and didn't pick up my call nor did she replied to my message. But I really wanted to meet her. So i thought we won't meet today but during the call she told me that she will drop her cousin to Shivaji Park and then leave. So I decided to surprise her there after that I got the emergency location of her and I saw on life360 that she left so then I left my home and went to Shivaji Park and bought chocolate for her. But then she called me and got to know that she is not dropping her cousin and leaving for home so I told her about my surprise and then we decided to meet. We met at tilak bridge and decide to stop at 5 garden. After reaching there  I parked my scooter and was seating in her car. We started talking, We held hands, we clicked videos. Time was running fast and she had to leave but she doesn't wanted to leave, her face was showing the frustration of why is time running so fast. When finally I was about to leave she told me to seat and she started the car and we stopped near Joseph church. After 5-10 minutes I was about to leave she told me to seat I thought she wants me to come with her but then she removed her seat belt and hugged me. It was our first proper hug. At first I couldn't believe what just happened but it was magical and I felt very peaceful. I never wanted to break that hug.  My eyes were close my head was on her shoulders and her hairs were all over my face and we were holding each other very tightly we both didn't want to leave each other. The time stopped for me there and I felt very safe.The feeling was surreal. I just wanted to be there for a longer time. I never felt anything like that before. I wish we could have hugged for a longer time. But then when we were getting apart she kissed me on my neck it was very quick she thought I wouldn't notice but I noticed it and the feeling was like violins were playing in my head, butterflies in the stomach. I can't express that feelings in words. But it was very beautiful I would never forget that moment in my lifetime. I wish we could hug more ❤️🥺`
+  },
+  ...(window.MEMORY_NOTES_MAY || [])
 ];
 const SPECIAL_MOMENTS = [
   {
@@ -413,6 +431,26 @@ function openMoment(moment) {
   momentViewer.classList.remove("hidden");
 }
 
+function openMemoryNote(note) {
+  noteViewerTitle.textContent = note.date;
+  noteViewerBody.textContent = note.body;
+  noteViewer.classList.remove("hidden");
+  noteViewerBody.scrollTop = 0;
+}
+
+function renderMemoryNotes() {
+  if (!memoryNotesGrid) return;
+  memoryNotesGrid.innerHTML = "";
+  MEMORY_NOTES.forEach((note) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "memory-note";
+    card.innerHTML = `<span class="memory-note-date">${note.date}</span><p class="memory-note-preview">${note.preview}</p>`;
+    card.addEventListener("click", () => openMemoryNote(note));
+    memoryNotesGrid.appendChild(card);
+  });
+}
+
 function renderSpecialMoments() {
   momentsGrid.innerHTML = "";
   SPECIAL_MOMENTS.forEach((moment) => {
@@ -604,6 +642,20 @@ momentViewer.addEventListener("click", (event) => {
   }
 });
 
+if (closeNoteViewer) {
+  closeNoteViewer.addEventListener("click", () => {
+    noteViewer.classList.add("hidden");
+  });
+}
+
+if (noteViewer) {
+  noteViewer.addEventListener("click", (event) => {
+    if (event.target === noteViewer) {
+      noteViewer.classList.add("hidden");
+    }
+  });
+}
+
 window.addEventListener("resize", setupConfettiCanvas);
 
 unlockForm.addEventListener("submit", (event) => {
@@ -662,6 +714,7 @@ function bootstrapRomanticFeatures() {
   renderDistanceMeter();
   renderHeartJar();
   renderMemoryMap();
+  renderMemoryNotes();
   renderSpecialMoments();
   initPeriodTracker();
   setDailyLoveNote();

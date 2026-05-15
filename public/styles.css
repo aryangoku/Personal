@@ -508,6 +508,7 @@ body {
 .daily-note-card,
 .hug-card,
 .memory-map-card,
+.memory-notes-card,
 .moments-card,
 .period-card {
   background:
@@ -670,6 +671,137 @@ body {
 .memory-map-item p {
   margin: 0;
   font-size: 0.9rem;
+}
+
+.memory-notes-grid {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 1rem;
+}
+
+.memory-note {
+  position: relative;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  min-height: 148px;
+  padding: 1.1rem 0.95rem 0.85rem;
+  border-radius: 2px 2px 14px 2px;
+  background:
+    linear-gradient(165deg, #fff6dc 0%, #ffe9c8 42%, #ffdfb8 100%);
+  box-shadow:
+    2px 3px 0 rgba(120, 70, 30, 0.12),
+    4px 8px 18px rgba(10, 2, 16, 0.35);
+  color: #4a2f22;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.memory-note::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 22px 22px 0;
+  border-color: transparent #f3d4a8 transparent transparent;
+}
+
+.memory-note::after {
+  content: "📌";
+  position: absolute;
+  top: -0.35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.95rem;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+.memory-note:nth-child(even) {
+  transform: rotate(1.6deg);
+}
+
+.memory-note:nth-child(odd) {
+  transform: rotate(-1.4deg);
+}
+
+.memory-note:hover,
+.memory-note:focus-visible {
+  transform: rotate(0deg) translateY(-4px) scale(1.02);
+  box-shadow:
+    2px 3px 0 rgba(120, 70, 30, 0.14),
+    8px 16px 28px rgba(10, 2, 16, 0.42);
+  outline: none;
+}
+
+.memory-note-date {
+  display: block;
+  margin: 0.35rem 0 0.45rem;
+  font-family: "Segoe Script", "Bradley Hand", cursive;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #6b3828;
+}
+
+.memory-note-preview {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #5a4035;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 21;
+  background: rgba(10, 3, 16, 0.82);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.note-viewer-card {
+  width: min(640px, 96%);
+  max-height: min(88vh, 760px);
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(165deg, #fff8e8 0%, #ffeccc 55%, #ffe2ba 100%);
+  border: 1px solid rgba(120, 70, 40, 0.22);
+  border-radius: 4px 4px 18px 4px;
+  padding: 1rem 1.1rem 1.2rem;
+  box-shadow: 0 24px 60px rgba(10, 2, 16, 0.5);
+}
+
+.note-viewer-card h3 {
+  margin: 0.5rem 0 0.75rem;
+  font-family: "Segoe Script", "Bradley Hand", cursive;
+  font-size: 1.35rem;
+  color: #6b3828;
+}
+
+.note-viewer-body {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0;
+  padding-right: 0.35rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #4a3228;
+  white-space: pre-wrap;
+}
+
+.note-viewer .viewer-close-btn {
+  align-self: flex-start;
+  background: rgba(107, 56, 40, 0.12);
+  color: #5a3224;
 }
 
 .distance-grid {
@@ -1101,6 +1233,10 @@ body {
   }
 
   .moments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .memory-notes-grid {
     grid-template-columns: 1fr;
   }
 

@@ -228,6 +228,14 @@
         <div id="memoryMapList" class="memory-map-list"></div>
       </section>
 
+      <section class="memory-notes-card">
+        <div class="card-top">
+          <h2>Memory Notes</h2>
+        </div>
+        <p class="subtle">Tap a note to read the full memory.</p>
+        <div id="memoryNotesGrid" class="memory-notes-grid"></div>
+      </section>
+
       <section class="moments-card">
         <div class="card-top">
           <h2>Our Special Moments</h2>
@@ -249,6 +257,17 @@
       </div>
     </div>
 
+    <div id="noteViewer" class="note-viewer hidden">
+      <div class="note-viewer-card">
+        <button id="closeNoteViewer" class="viewer-close-btn" type="button">
+          Close
+        </button>
+        <h3 id="noteViewerTitle"></h3>
+        <div id="noteViewerBody" class="note-viewer-body"></div>
+      </div>
+    </div>
+
+    <script src="./memory-notes-data.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
